@@ -14,8 +14,6 @@
 :root {
   --background: #f2f2f2;
   --foreground: #111827;
-
-  /* Grey scale used by the WhatsNew component */
   --color-grey-200: #e5e7eb;
   --color-grey-300: #d1d5db;
   --color-grey-900: #111827;
@@ -25,30 +23,33 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
-  /* Greys exposed as Tailwind colors -> bg-grey-200, text-grey-900, etc. */
   --color-grey-200: var(--color-grey-200);
   --color-grey-300: var(--color-grey-300);
   --color-grey-900: var(--color-grey-900);
-
-  /* Fonts */
   --font-sans: "saans", sans-serif;
   --font-serif: var(--font-playfair);
   --font-sans-primary: "saans", sans-serif;
-
-  /* Custom easing token -> ease-smooth */
   --ease-smooth: cubic-bezier(0.65, 0.05, 0.36, 1);
-
-  /* Extra font sizes used in the heading */
   --text-8xl: 6rem;
   --text-8-5xl: 7rem;
 }
 
 /* ---------- Base ---------- */
+html, body {
+  overflow-x: clip;  /* ✅ Fixes overflow without breaking sticky */
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 /* ---------- Custom utilities ---------- */
@@ -71,7 +72,6 @@ body {
   to   { transform: translateY(0%); }
 }
 
-/* Optional helper class if you ever want a CSS-driven slide-up word */
 .animate-word-up {
   animation: wordUp 0.8s var(--ease-smooth) forwards;
 }

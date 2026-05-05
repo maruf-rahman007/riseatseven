@@ -12,7 +12,7 @@ import ReadyToRise from "@/components/ReadyToRise";
 
 export default function Home() {
   return (
-    <main className="w-full bg-[#f2f2f2] min-h-screen">
+    <main className=" bg-[#f2f2f2]">
       <TopStrip />
       <Hero />
       <MovingLogos/>
