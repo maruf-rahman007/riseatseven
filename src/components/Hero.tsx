@@ -5,25 +5,31 @@ import { useState } from "react";
 
 export default function Hero() {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+
+    const toggleMobileSection = (section: string) => {
+        setMobileExpanded(mobileExpanded === section ? null : section);
+    };
 
     return (
-        <section className="px-4 mt-4">
-            <div className="relative min-h-[95vh] w-full rounded-[32px] overflow-hidden">
+        <section className="px-2 sm:px-4 mt-2 sm:mt-4">
+            <div className="relative min-h-[95vh] w-full rounded-[20px] sm:rounded-[32px] overflow-hidden">
 
-                {/* ✅ Background */}
+                {/* Background */}
                 <img
                     src="/hero.webp"
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover scale-125 blur-[22px]"
                 />
 
-                {/* ✅ Overlay */}
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50" />
 
-                {/* ✅ NAVBAR */}
-                <div className="relative z-20 flex items-center justify-between px-10 pt-10 pb-6">
+                {/* NAVBAR */}
+                <div className="relative z-20 flex items-center justify-between px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 lg:pt-10 pb-4 sm:pb-6">
 
-                    <Link href="/" className="text-white block w-[160px] xl:w-[180px]">
+                    <Link href="/" className="text-white block w-[110px] sm:w-[140px] lg:w-[160px] xl:w-[180px]">
                         <svg
                             className="w-full h-auto fill-current"
                             xmlns="http://www.w3.org/2000/svg"
@@ -46,9 +52,10 @@ export default function Hero() {
                         </svg>
                     </Link>
 
+                    {/* DESKTOP NAV */}
                     <nav className="hidden lg:flex items-center gap-6 text-white text-sm font-semibold">
 
-                        {/* ================= SERVICES ================= */}
+                        {/*  SERVICES  */}
                         <div
                             className="relative"
                             onMouseEnter={() => setActiveMenu("services")}
@@ -92,7 +99,7 @@ export default function Hero() {
                             </div>
                         </div>
 
-                        {/* ================= INTERNATIONAL ================= */}
+                        {/* INTERNATIONAL  */}
                         <div
                             className="relative"
                             onMouseEnter={() => setActiveMenu("international")}
@@ -123,7 +130,7 @@ export default function Hero() {
                             </div>
                         </div>
 
-                        {/* ================= ABOUT ================= */}
+                        {/* ABOUT */}
                         <div
                             className="relative"
                             onMouseEnter={() => setActiveMenu("about")}
@@ -166,32 +173,276 @@ export default function Hero() {
                         ))}
                     </nav>
 
+                    {/* DESKTOP CTA */}
                     <Link
                         href="#"
-                        className="bg-white text-black px-6 py-3 rounded-full text-sm font-medium"
+                        className="hidden lg:inline-flex bg-white text-black px-6 py-3 rounded-full text-sm font-medium"
                     >
                         Get In Touch ↗
                     </Link>
+
+                    {/* MOBILE HAMBURGER */}
+                    <button
+                        onClick={() => setMobileMenuOpen(true)}
+                        className="lg:hidden text-white p-2"
+                        aria-label="Open menu"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-7 h-7"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                        </svg>
+                    </button>
                 </div>
 
-                {/* ✅ HERO CONTENT */}
-                <div className="relative z-10 flex flex-col items-center pt-24 text-white text-center px-6">
+                {/* FULL SCREEN MOBILE MENU OVERLAY            */}
+                
+                <div
+                    className={`lg:hidden fixed inset-0 z-50 transition-all duration-500 ease-in-out
+                    ${mobileMenuOpen ? "visible opacity-100" : "invisible opacity-0"}`}
+                >
+                    {/* Blurred background image */}
+                    <div className="absolute inset-0">
+                        <img
+                            src="/hero.webp"
+                            alt=""
+                            className="w-full h-full object-cover scale-125 blur-[30px]"
+                        />
+                        <div className="absolute inset-0 bg-black/70" />
+                    </div>
 
-                    {/* ✅ Awards Section */}
+                    {/* Menu content */}
+                    <div
+                        className={`relative h-full flex flex-col px-6 pt-6 pb-8 text-white
+                        transition-transform duration-500 ease-out
+                        ${mobileMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
+                    >
+                        {/* Top bar - Logo + Close */}
+                        <div className="flex items-center justify-between mb-10">
+                            <Link href="/" className="text-white block w-[120px]">
+                                <svg
+                                    className="w-full h-auto fill-current"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 168 21"
+                                >
+                                    <path d="M91.3152 5.40061C91.3152 3.94241 92.5306 2.67359 93.9881 2.67359C95.7162 2.67359 96.797 3.83419 96.797 5.56225H99.7127C99.7127 2.1873 97.3096 0 93.9874 0C90.9371 0 88.3988 2.32257 88.3988 5.42766C88.3988 9.31596 90.883 10.2344 93.9874 11.4221C95.6627 12.07 97.2007 12.5563 97.2007 14.6895C97.2007 16.634 95.9867 18.0651 93.9874 18.0651C91.8813 18.0651 90.7477 16.3905 90.7477 14.446H87.832C87.832 18.0651 90.3426 20.7381 93.9874 20.7381C97.6323 20.7381 100.118 18.2816 100.118 14.6895C100.118 7.10161 91.3145 9.64061 91.3145 5.40061H91.3152Z" />
+                                    <path d="M109.209 4.99609C104.834 4.99609 101.539 8.53405 101.539 12.8539C101.539 17.1737 104.888 20.738 109.155 20.738C112.422 20.738 115.203 18.713 116.337 15.662H113.529C112.718 17.2278 111.017 18.1733 109.262 18.1733C106.806 18.1733 104.915 16.4182 104.348 14.0963H116.743C116.797 13.6371 116.823 13.1508 116.823 12.6922C116.823 8.47926 113.447 4.99609 109.209 4.99609ZM104.348 11.9361C104.509 9.47823 106.751 7.56147 109.181 7.56147C111.611 7.56147 113.853 9.47823 114.014 11.9361H104.348Z" />
+                                    <path d="M127.476 5.40039L123.575 16.0941L119.673 5.40039H116.676L122.617 20.3598H124.588L130.475 5.40039H127.476Z" />
+                                    <path d="M137.942 4.99609C133.567 4.99609 130.273 8.53405 130.273 12.8539C130.273 17.1737 133.621 20.738 137.888 20.738C141.155 20.738 143.936 18.713 145.071 15.662H142.262C141.453 17.2278 139.75 18.1733 137.996 18.1733C135.538 18.1733 133.649 16.4182 133.081 14.0963H145.476C145.53 13.6371 145.556 13.1508 145.556 12.6922C145.556 8.47926 142.182 4.99609 137.942 4.99609ZM133.081 11.9361C133.243 9.47823 135.484 7.56147 137.915 7.56147C140.347 7.56147 142.586 9.47823 142.749 11.9361H133.081Z" />
+                                    <path d="M147.473 8.21195V8.69013V20.3618H150.032V10.1815L167.216 20.3618V17.2405L147.473 5.40039V8.21195Z" />
+                                    <path d="M67.8431 7.50804H67.789C66.6818 5.80635 64.7103 4.99609 62.713 4.99609C58.1775 4.99609 54.7734 8.3981 54.7734 12.935C54.7734 17.4719 58.2296 20.7387 62.713 20.7387C64.7651 20.7387 66.7359 19.8473 67.789 18.0387H67.8431V20.3606H70.652V5.40122H67.8431V7.50804ZM62.686 18.1733C59.823 18.1733 57.5823 15.7168 57.5823 12.9073C57.5823 10.0978 59.7425 7.56079 62.7124 7.56079C65.6822 7.56079 67.8972 9.90973 67.8972 12.9073C67.8972 15.9048 65.6024 18.1733 62.6867 18.1733H62.686Z" />
+                                    <path d="M77.5832 0.378906H74.7736V5.40144H72.75V7.96681H74.7736V20.3608H77.5832V7.96681H80.0403V5.40144H77.5832V0.378906Z" />
+                                    <path d="M18.3089 0.378906H15.5V3.2953H18.3089V0.378906Z" />
+                                    <path d="M18.3089 5.02344H15.5V19.9828H18.3089V5.02344Z" />
+                                    <path d="M25.8409 10.7205C24.8142 10.3959 23.5183 10.0996 23.5183 8.77603C23.5183 7.77639 24.3279 7.18256 25.2728 7.18256C26.4077 7.18256 27.0549 7.91166 27.1895 8.99178H29.9984C29.9443 6.39935 27.9727 4.61719 25.4087 4.61719C22.8447 4.61719 20.7088 6.3723 20.7088 8.93767C20.7088 14.2307 27.5412 12.6102 27.5412 15.743C27.5412 17.0389 26.6227 17.7951 25.381 17.7951C23.707 17.7951 22.9516 16.6074 22.8427 15.0681H20.0352C20.0352 17.417 21.1951 19.2269 23.4094 20.0094C24.0303 20.2252 24.6789 20.3604 25.3262 20.3604C28.1892 20.3604 30.3494 18.5248 30.3494 15.5807C30.3494 12.6366 28.296 11.476 25.8402 10.7205H25.8409Z" />
+                                    <path d="M39.3637 4.61719C34.9891 4.61719 31.6953 8.15514 31.6953 12.475C31.6953 16.7948 35.0432 20.3591 39.3096 20.3591C42.577 20.3591 45.3581 18.3341 46.493 15.2831H43.6842C42.8746 16.8489 41.1722 17.7944 39.4178 17.7944C36.96 17.7944 35.0709 16.0393 34.5028 13.7174H46.8975C46.9516 13.2582 46.978 12.7719 46.978 12.3133C46.978 8.10036 43.6037 4.61719 39.3637 4.61719ZM34.5028 11.5565C34.6651 9.09864 36.9059 7.18188 39.3373 7.18188C41.7688 7.18188 44.0075 9.09932 44.1705 11.5565H34.5028Z" />
+                                    <path d="M9.55945 12.1512C12.1519 11.2327 13.3395 9.09953 13.3395 6.39957C13.3395 4.67151 12.7728 2.88934 11.5046 1.67395C10.0998 0.297591 8.07419 0 6.18314 0H0V19.9826H2.91572V13.8069L13.3389 19.9826V16.8606L6.22575 12.5949L7.61496 12.5293C8.26222 12.5293 8.96359 12.3676 9.55809 12.1512H9.55945ZM4.91499 10.3156H2.91572V2.67359H5.99444C8.317 2.67359 10.4231 3.86192 10.4231 6.40024C10.4231 9.5865 7.50742 10.3156 4.91499 10.3156Z" />
+                                </svg>
+                            </Link>
+
+                            <button
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="text-white p-2"
+                                aria-label="Close menu"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="w-7 h-7"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Menu Items */}
+                        <nav className="flex-1 overflow-y-auto">
+                            <ul className="space-y-1">
+                                {/* Services */}
+                                <li>
+                                    <button
+                                        onClick={() => toggleMobileSection("services")}
+                                        className="w-full flex items-center justify-between py-2 text-left"
+                                    >
+                                        <span className="text-4xl font-semibold">Services</span>
+                                        <span className="w-9 h-9 rounded-full border border-white/40 flex items-center justify-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={2}
+                                                stroke="currentColor"
+                                                className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === "services" ? "rotate-180" : ""}`}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <div
+                                        className={`overflow-hidden transition-all duration-300 ${mobileExpanded === "services" ? "max-h-96 mt-2" : "max-h-0"}`}
+                                    >
+                                        <ul className="pl-2 space-y-2 pb-3 text-lg text-white/80">
+                                            <li>Search & Growth Strategy</li>
+                                            <li>Onsite SEO</li>
+                                            <li>Content Experience</li>
+                                            <li>B2B Marketing</li>
+                                            <li>Digital PR</li>
+                                            <li>Social Media & Campaigns</li>
+                                            <li>Data & Insights</li>
+                                            <li>Social SEO/Search</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                {/* Industries */}
+                                <li>
+                                    <button
+                                        onClick={() => toggleMobileSection("industries")}
+                                        className="w-full flex items-center justify-between py-2 text-left"
+                                    >
+                                        <span className="text-4xl font-semibold">Industries</span>
+                                        <span className="w-9 h-9 rounded-full border border-white/40 flex items-center justify-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={2}
+                                                stroke="currentColor"
+                                                className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === "industries" ? "rotate-180" : ""}`}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <div
+                                        className={`overflow-hidden transition-all duration-300 ${mobileExpanded === "industries" ? "max-h-96 mt-2" : "max-h-0"}`}
+                                    >
+                                        <ul className="pl-2 space-y-2 pb-3 text-lg text-white/80">
+                                            <li>E-commerce</li>
+                                            <li>SaaS</li>
+                                            <li>Finance</li>
+                                            <li>Travel</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                {/* International */}
+                                <li>
+                                    <button
+                                        onClick={() => toggleMobileSection("international")}
+                                        className="w-full flex items-center justify-between py-2 text-left"
+                                    >
+                                        <span className="text-4xl font-semibold">International</span>
+                                        <span className="w-9 h-9 rounded-full border border-white/40 flex items-center justify-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={2}
+                                                stroke="currentColor"
+                                                className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === "international" ? "rotate-180" : ""}`}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <div
+                                        className={`overflow-hidden transition-all duration-300 ${mobileExpanded === "international" ? "max-h-96 mt-2" : "max-h-0"}`}
+                                    >
+                                        <ul className="pl-2 space-y-2 pb-3 text-lg text-white/80">
+                                            <li>US Digital PR</li>
+                                            <li>Spain Digital PR</li>
+                                            <li>Germany Digital PR</li>
+                                            <li>Netherlands Digital PR</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                {/* About */}
+                                <li>
+                                    <button
+                                        onClick={() => toggleMobileSection("about")}
+                                        className="w-full flex items-center justify-between py-2 text-left"
+                                    >
+                                        <span className="text-4xl font-semibold">About</span>
+                                        <span className="w-9 h-9 rounded-full border border-white/40 flex items-center justify-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={2}
+                                                stroke="currentColor"
+                                                className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === "about" ? "rotate-180" : ""}`}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <div
+                                        className={`overflow-hidden transition-all duration-300 ${mobileExpanded === "about" ? "max-h-96 mt-2" : "max-h-0"}`}
+                                    >
+                                        <ul className="pl-2 space-y-2 pb-3 text-lg text-white/80">
+                                            <li>About Us</li>
+                                            <li>Meet The Risers</li>
+                                            <li>Culture</li>
+                                            <li>Testimonials</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                {/* Simple links */}
+                                {["Work", "Careers", "Blog", "Webinar"].map((item) => (
+                                    <li key={item}>
+                                        <Link
+                                            href="#"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="block py-2 text-4xl font-semibold"
+                                        >
+                                            {item}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+
+                        {/* Bottom CTA */}
+                        <div className="pt-6">
+                            <Link
+                                href="#"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="block w-full text-center bg-white text-black py-4 rounded-full text-lg font-medium"
+                            >
+                                Get In Touch ↗
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                {/* HERO CONTENT */}
+                <div className="relative z-10 flex flex-col items-center pt-12 sm:pt-16 lg:pt-24 text-white text-center px-4 sm:px-6">
+
+                    {/* Awards Section */}
                     <div className="flex flex-col items-center justify-center mb-6">
 
-                        <div className="uppercase text-xs font-bold leading-tight tracking-tight max-w-[13rem] text-center mb-3 text-white">
+                        <div className="uppercase text-[10px] sm:text-xs font-bold leading-tight tracking-tight max-w-[13rem] text-center mb-3 text-white">
                             #1 Most recommended content marketing agency
                         </div>
 
-                        {/* ✅ Important: Added px-3 so laurels don’t get clipped */}
                         <div className="flex items-center gap-x-2">
 
                             {/* LEFT LAUREL */}
                             <svg
                                 viewBox="0 0 28 38"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 text-white"
+                                className="w-5 sm:w-6 text-white"
                             >
                                 <path
                                     fill="currentColor"
@@ -200,19 +451,19 @@ export default function Hero() {
                             </svg>
 
                             {/* AWARDS */}
-                            <div className="w-12 aspect-[20/9] relative">
+                            <div className="w-10 sm:w-12 aspect-[20/9] relative">
                                 <img src="/awards/global-search.png" alt="" className="w-full h-full object-contain" />
                             </div>
 
-                            <div className="w-12 aspect-[20/9] relative">
+                            <div className="w-10 sm:w-12 aspect-[20/9] relative">
                                 <img src="/awards/drum.png" alt="" className="w-full h-full object-contain" />
                             </div>
 
-                            <div className="w-12 aspect-[20/9] relative">
+                            <div className="w-10 sm:w-12 aspect-[20/9] relative">
                                 <img src="/awards/uk-social.png" alt="" className="w-full h-full object-contain" />
                             </div>
 
-                            <div className="w-12 aspect-[20/9] relative hidden lg:inline-flex">
+                            <div className="w-10 sm:w-12 aspect-[20/9] relative hidden lg:inline-flex">
                                 <img src="/awards/content-awards.png" alt="" className="w-full h-full object-contain" />
                             </div>
 
@@ -220,7 +471,7 @@ export default function Hero() {
                             <svg
                                 viewBox="0 0 28 38"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 text-white -scale-x-100"
+                                className="w-5 sm:w-6 text-white -scale-x-100"
                             >
                                 <path
                                     fill="currentColor"
@@ -231,32 +482,52 @@ export default function Hero() {
                         </div>
                     </div>
 
-                    {/* ✅ HEADLINE */}
+                    {/* HEADLINE */}
                     <div>
 
-                        <h1 className="text-[150px] leading-[0.9] font-semibold tracking-[-0.05em]">
-                            We Create
-                        </h1>
+                        {/* MOBILE: Stacked headline */}
+                        <div className="lg:hidden">
+                            <h1 className="text-[56px] sm:text-[72px] leading-[0.95] font-semibold tracking-[-0.04em]">
+                                We Create
+                            </h1>
+                            <h1 className="text-[56px] sm:text-[72px] leading-[0.95] font-semibold tracking-[-0.04em] mt-1">
+                                Category
+                            </h1>
+                            <h1 className="text-[56px] sm:text-[72px] leading-[0.95] font-semibold tracking-[-0.04em] mt-1">
+                                Leaders
+                            </h1>
 
-                        <h1 className="text-[150px] leading-[0.9] font-semibold tracking-[-0.05em] flex items-center justify-center gap-8 mt-2">
-                            Category
-                            <div className="w-32 h-32 rounded-xl overflow-hidden">
-                                <img
-                                    src="/inline.webp"
-                                    alt=""
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                            Leaders
-                        </h1>
+                            <p className="mt-5 text-base sm:text-lg font-semibold text-white/80">
+                                on every searchable platform
+                            </p>
+                        </div>
 
-                        <p className="mt-6 text-3xl font-semibold text-white/80">
-                            on every searchable platform
-                        </p>
+                        {/* DESKTOP: Original layout with inline image */}
+                        <div className="hidden lg:block">
+                            <h1 className="text-[100px] xl:text-[150px] leading-[0.9] font-semibold tracking-[-0.05em]">
+                                We Create
+                            </h1>
+
+                            <h1 className="text-[100px] xl:text-[150px] leading-[0.9] font-semibold tracking-[-0.05em] flex items-center justify-center gap-8 mt-2">
+                                Category
+                                <div className="w-24 h-24 xl:w-32 xl:h-32 rounded-xl overflow-hidden">
+                                    <img
+                                        src="/inline.webp"
+                                        alt=""
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                Leaders
+                            </h1>
+
+                            <p className="mt-6 text-2xl xl:text-3xl font-semibold text-white/80">
+                                on every searchable platform
+                            </p>
+                        </div>
                     </div>
 
-                    {/* ✅ Platforms */}
-                    <div className="w-full flex justify-center relative overflow-hidden z-0 mt-12 gap-x-14">
+                    {/* Platforms - Hidden on mobile */}
+                    <div className="hidden md:flex w-full justify-center relative overflow-hidden z-0 mt-12 gap-x-6 lg:gap-x-14 flex-wrap">
 
                         {[
                             "google.png",
@@ -269,7 +540,7 @@ export default function Hero() {
                             "reddit.png",
                             "amazon.png",
                         ].map((logo, index) => (
-                            <div key={index} className="w-20 aspect-[20/9] relative">
+                            <div key={index} className="w-16 lg:w-20 aspect-[20/9] relative">
                                 <img
                                     src={`/platforms/${logo}`}
                                     alt=""
@@ -281,14 +552,14 @@ export default function Hero() {
                     </div>
                 </div>
 
-                {/* ✅ Bottom Left */}
-                <div className="absolute bottom-4 left-10 text-md text-white/80 max-w-md">
+                {/* Bottom Left - Hidden on mobile */}
+                <div className="hidden lg:block absolute bottom-4 left-10 text-md text-white/80 max-w-md">
                     Organic media planners creating, distributing & optimising
                     search-first content for SEO, Social, PR, AI and LLM search
                 </div>
 
-                {/* ✅ Bottom Right */}
-                <div className="absolute bottom-4 right-10 text-md text-white/80 text-right">
+                {/* Bottom Right */}
+                <div className="absolute bottom-4 left-0 right-0 lg:left-auto lg:right-10 text-xs sm:text-sm lg:text-md text-white/80 text-center lg:text-right px-4 lg:px-0">
                     4 Global Offices serving <br />
                     UK, USA (New York) & EU
                 </div>
