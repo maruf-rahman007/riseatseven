@@ -1,98 +1,145 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-
-const projects = [
-    { id: 1, name: "SIXT", year: "2023-2025" },
-    { id: 2, name: "Dojo - B2B", year: "2021-2025" },
-    { id: 3, name: "Magnet Trade - B2B", year: "2023-2024" },
-    { id: 4, name: "Leading E Sim brand", year: "2023-2025" },
-    { id: 5, name: "JD Sports", year: "2025" },
-];
-
-function ProjectItem({ project, index, total, scrollYProgress }: any) {
-    const start = index / total;
-    const end = (index + 1) / total;
-
-    // WAAPI complains strictly if offsets exceed [0, 1] bounds, wait! Actually Framer motion
-    // optimizes useTransform by sending it to WAAPI (Web Animations API) if the element is hardware accelerated.
-    // WAAPI requires offsets to be between 0 and 1! If they are outside, it will throw:
-    // "Failed to execute 'animate' on 'Element': Offsets must be monotonically non-decreasing."
-
-    // Let's create an array strictly bounded inside [0, 1] that is always progressively increasing.
-    // Since start is between 0 and 1, we map:
-    const safeStart = Math.max(0, start - 0.05);
-    const safeFadeInEnd = Math.max(safeStart + 0.01, start);
-
-    // safe space inside end:
-    const safeEnd = Math.min(1, end + 0.05);
-    const safeFadeOutStart = Math.min(safeEnd - 0.01, end);
-
-    const mapRanges = [safeStart, safeFadeInEnd, safeFadeOutStart, safeEnd];
-
-    const opacity = useTransform(scrollYProgress, mapRanges, [0.3, 1, 1, 0.3]);
-
-    return (
-        <motion.div
-            className="flex items-end space-x-6 cursor-pointer"
-            style={{ opacity }}
-        >
-            <h3 className="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter hover:text-[#ade8ce] hover:pl-4 transition-all duration-300">
-                {project.name}
-            </h3>
-            <span className="text-sm font-mono opacity-50 mb-1">[{project.year}]</span>
-        </motion.div>
-    );
-}
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { projects } from "@/lib/projects";
 
 
 export default function FeaturedWork() {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef(null);
+    const [active, setActive] = useState(0);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start start", "end end"]
+        offset: ["start start", "end end"],
     });
 
+    // Convert scroll to index
+    useMotionValueEvent(scrollYProgress, "change", (latest) => {
+        const index = Math.min(
+            projects.length - 1,
+            Math.floor(latest * projects.length)
+        );
+        setActive(index);
+    });
+
+    const y = useTransform(
+        scrollYProgress,
+        [0, 1],
+        ["0%", `-${68 * (projects.length - 1)}%`]
+    );
+
     return (
-        <section ref={containerRef} className="bg-black text-white w-full h-[300vh] relative">
-            <div className="sticky top-0 h-screen w-full flex flex-col md:flex-row items-center px-6 max-w-7xl mx-auto">
+        <>
+            <section
+                ref={containerRef}
+                className="relative bg-black text-white h-[600vh]"
+            >
 
-                {/* Left Side: Client List */}
-                <div className="w-full md:w-1/2 h-full flex flex-col justify-center pr-8 space-y-6 z-10 pt-20 md:pt-0">
-                    <h2 className="text-[#ade8ce] uppercase tracking-widest text-sm font-semibold mb-8">Featured Work</h2>
-                    {projects.map((project, index) => (
-                        <ProjectItem
-                            key={project.id}
-                            project={project}
-                            index={index}
-                            total={projects.length}
-                            scrollYProgress={scrollYProgress}
-                        />
-                    ))}
-                </div>
+                <div className="sticky top-0 h-screen grid grid-cols-12 gap-10 px-12">
 
-                {/* Right Side: Image Scroll Area */}
-                <div className="hidden md:flex w-1/2 h-[70vh] relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800">
-                    <motion.div
-                        className="absolute inset-0 flex flex-col w-full"
-                        style={{
-                            y: useTransform(scrollYProgress, [0, 1], ["0%", `-${100 * ((projects.length - 1) / projects.length)}%`])
-                        }}
-                    >
+                    {/* LEFT SIDE */}
+                    <div className="col-span-6 flex flex-col justify-center space-y-6">
+                        <h2 className="pb-8 font-bold text-2xl">Featured Work</h2>
                         {projects.map((p, i) => (
-                            <div key={i} className="h-full w-full shrink-0 flex items-center justify-center p-8">
-                                <div className="w-full h-full bg-neutral-800 rounded-xl relative overflow-hidden group">
-                                    <div className="absolute inset-0 bg-neutral-700 transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="absolute bottom-6 left-6 text-white text-2xl font-bold bg-black/50 px-4 py-2 rounded-lg backdrop-blur-md">
-                                        {p.name} Campaign
-                                    </div>
-                                </div>
-                            </div>
+                            <motion.div
+                                key={p.id}
+                                animate={{
+                                    opacity: active === i ? 1 : 0.3,
+                                    x: active === i ? 20 : 0,
+                                }}
+                                transition={{ duration: 0.4 }}
+                            >
+                                <h2 className="text-6xl font-semibold tracking-tight">
+                                    {p.name}
+                                </h2>
+                                <div className="text-sm opacity-60">[{p.year}]</div>
+                            </motion.div>
                         ))}
-                    </motion.div>
+                    </div>
+
+                    {/* RIGHT SIDE */}
+                    <div className="col-span-6 relative overflow-hidden rounded-3xl">
+                        <motion.div
+                            style={{ y }}
+                            className="absolute inset-0 flex flex-col"
+                        >
+                            {projects.map((p) => (
+                                <ProjectCard key={p.id} project={p} />
+                            ))}
+                        </motion.div>
+                    </div>
                 </div>
+            </section>
+            <div className="flex justify-center mt-3 lg:mt-7 pb-12 bg-[#f2f2f2]">
+                <a
+                    href="#"
+                    className="w-full md:w-auto group inline-flex shrink-0 justify-center items-center gap-x-2 
+    relative overflow-hidden border border-transparent bg-white text-[#1a1a1a]
+    px-6 py-3 rounded-[999px] font-medium text-base leading-tight tracking-tight
+    transition-all duration-300 hover:rounded-xl"
+                >
+                    <div className="relative overflow-hidden h-6">
+                        {/* Default text */}
+                        <div className="transition-transform duration-300 group-hover:-translate-y-6">
+                            <div className="flex items-center gap-x-2">
+                                <span>Explore Our Work</span>
+                                <span
+                                    className="inline-block text-xs mt-1 transition-transform"
+                                    aria-hidden="true"
+                                >
+                                    ↗
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Hover text */}
+                        <div className="absolute top-0 left-0 translate-y-6 transition-transform duration-300 group-hover:translate-y-0">
+                            <div className="flex items-center gap-x-2">
+                                <span>Explore Our Work</span>
+                                <span
+                                    className="inline-block text-xs mt-1 transition-transform"
+                                    aria-hidden="true"
+                                >
+                                    ↗
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </section>
+        </>
+    );
+}
+
+function ProjectCard({ project }: any) {
+    return (
+        <div className="h-screen w-full p-4">
+
+            {/* Rounded container */}
+            <div className="relative h-full w-full rounded-3xl overflow-hidden group shadow-2xl">
+
+                {/* Image */}
+                <img
+                    src={project.image}
+                    alt={project.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute bottom-6 right-6 inline-flex items-center bg-white/20 backdrop-blur px-4 py-2 rounded-full text-black">
+                    {project.category}
+                </div>
+
+                {/* Overlay */}
+                <div
+                    className="absolute inset-0 flex flex-col justify-between p-10 opacity-0 group-hover:opacity-100 transition-all duration-500"
+                    style={{ backgroundColor: project.color }}
+                >
+                    <h3 className="text-4xl font-semibold text-black">
+                        {project.description}
+                    </h3>
+                </div>
+
+            </div>
+        </div>
     );
 }

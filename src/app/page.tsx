@@ -12,8 +12,9 @@ export default function Home() {
       <TopStrip />
       <Hero />
       <MovingLogos/>
-      {/* <Services /> */}
+      
       <FeaturedWork />
+      <Services />
       <Footer />
     </main>
   );
