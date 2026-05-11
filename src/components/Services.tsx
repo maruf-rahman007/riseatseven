@@ -33,100 +33,147 @@ export default function Services() {
     return (
         <>
             <section className="w-full bg-[#f2f2f2] text-black py-14 px-4">
-                <div className="mx-4">
+      <div className="mx-4">
 
-                    {/* ✅ HEADER ROW */}
-                    <div className="grid grid-cols-12 border-b border-neutral-300 pb-10 mb-10">
-                        <div className="col-span-12 md:col-span-9">
-                            <h2 className="flex items-center flex-wrap text-6xl md:text-8xl tracking-tight">
-                                <span>Our</span>
+        {/* ✅ HEADER ROW (unchanged) */}
+        <div className="grid grid-cols-12 border-b border-neutral-300 pb-10 mb-10">
+          <div className="col-span-12 md:col-span-9">
+            <h2 className="flex items-center flex-wrap text-6xl md:text-8xl tracking-tight">
+              <span>Our</span>
 
-                                {/* Optional image inside title */}
-                                <span className="mx-4 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden">
-                                    <img
-                                        src="service1.png"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </span>
+              <span className="mx-4 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden">
+                <img
+                  src="service1.png"
+                  className="w-full h-full object-cover"
+                />
+              </span>
 
-                                <span>Services</span>
-                            </h2>
-                        </div>
+              <span>Services</span>
+            </h2>
+          </div>
 
-                        <div className="hidden md:flex md:col-span-3 justify-end items-center">
-                            <a
-                                href="#"
-                                className="group relative px-6 py-3 bg-white rounded-full border border-neutral-300 overflow-hidden"
-                            >
-                                <div className="relative h-6 overflow-hidden">
-                                    <div className="transition-transform duration-300 group-hover:-translate-y-6">
-                                        View All Services ↗
-                                    </div>
-                                    <div className="absolute top-0 left-0 translate-y-6 transition-transform duration-300 group-hover:translate-y-0">
-                                        View All Services ↗
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+          <div className="hidden md:flex md:col-span-3 justify-end items-center">
+            <a
+              href="#"
+              className="group relative px-6 py-3 bg-white rounded-full border border-neutral-300 overflow-hidden"
+            >
+              <div className="relative h-6 overflow-hidden">
+                <div className="transition-transform duration-300 group-hover:-translate-y-6">
+                  View All Services ↗
+                </div>
+                <div className="absolute top-0 left-0 translate-y-6 transition-transform duration-300 group-hover:translate-y-0">
+                  View All Services ↗
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
 
-                    {/* ✅ SERVICES GRID */}
-                    <div className="grid grid-cols-12 gap-x-12">
-                        {services.map((service, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-100px" }}
-                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                                className="col-span-12 md:col-span-6 border-b border-neutral-300"
-                            >
-                                <a
-                                    href="#"
-                                    className="group relative block py-10 px-6 overflow-hidden
-             transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]
-             rounded-none group-hover:rounded-[60px]"
-                                >
-                                    {/* Hover Background */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 
+        {/* ✅ MOBILE VERSION */}
+        <div className="md:hidden">
+          {services.map((service, index) => (
+            <div
+              key={index}
+              className="relative border-b border-neutral-300"
+            >
+              <a
+                href="#"
+                className="group flex items-center gap-4 py-6 relative"
+              >
+                {/* Small Image */}
+                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
+                  <img
+                    src={service.image}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Arrow (slides in like original) */}
+                <div className="absolute left-16 opacity-0 -translate-x-4 
+                                group-hover:translate-x-0 
+                                group-hover:opacity-100
+                                transition-all duration-300 text-xl">
+                  ↗
+                </div>
+
+                {/* Title */}
+                <h3 className="text-3xl font-semibold tracking-tight transition-all duration-300 group-hover:translate-x-6">
+                  {service.title}
+                </h3>
+              </a>
+            </div>
+          ))}
+
+          {/* ✅ Mobile Button (matches original placement) */}
+          <div className="mt-8">
+            <a
+              href="#"
+              className="group relative w-full flex justify-center px-6 py-3 bg-white rounded-full border border-neutral-300 overflow-hidden"
+            >
+              <div className="relative h-6 overflow-hidden">
+                <div className="transition-transform duration-300 group-hover:-translate-y-6">
+                  View All Services ↗
+                </div>
+                <div className="absolute top-0 left-0 translate-y-6 transition-transform duration-300 group-hover:translate-y-0">
+                  View All Services ↗
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        {/* ✅ DESKTOP VERSION (UNCHANGED) */}
+        <div className="hidden md:grid grid-cols-12 gap-x-12">
+          {services.map((service, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="col-span-12 md:col-span-6 border-b border-neutral-300"
+            >
+              <a
+                href="#"
+                className="group relative block py-10 px-6 overflow-hidden
+                transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]
+                rounded-none group-hover:rounded-[60px]"
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 
                   transition-all duration-500 
                   rounded-[60px] overflow-hidden">
-                                        <img
-                                            src={service.image}
-                                            className="w-full h-full object-cover scale-100 
-                 group-hover:scale-105 transition duration-700"
-                                        />
-                                        <div className="absolute inset-0 bg-black/60"></div>
-                                    </div>
+                  <img
+                    src={service.image}
+                    className="w-full h-full object-cover scale-100 
+                    group-hover:scale-105 transition duration-700"
+                  />
+                  <div className="absolute inset-0 bg-black/60"></div>
+                </div>
 
-                                    {/* Content */}
-                                    <div className="relative z-10 flex items-center">
-
-                                        {/* Arrow */}
-                                        <div className="absolute left-0 -translate-x-10 opacity-0 
+                <div className="relative z-10 flex items-center">
+                  <div className="absolute left-0 -translate-x-10 opacity-0 
                     group-hover:translate-x-0 
                     group-hover:opacity-100 
                     transition-all duration-300 text-white text-3xl">
-                                            ↗
-                                        </div>
+                    ↗
+                  </div>
 
-                                        {/* Title */}
-                                        <h3
-                                            className="text-4xl md:text-5xl font-semibold tracking-tight 
-                 transition-all duration-300 
-                 group-hover:text-white 
-                 group-hover:translate-x-12"
-                                        >
-                                            {service.title}
-                                        </h3>
-
-                                    </div>
-                                </a>
-                            </motion.div>
-                        ))}
-                    </div>
+                  <h3
+                    className="text-4xl md:text-5xl font-semibold tracking-tight 
+                    transition-all duration-300 
+                    group-hover:text-white 
+                    group-hover:translate-x-12"
+                  >
+                    {service.title}
+                  </h3>
                 </div>
-            </section>
+              </a>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
+    </section>
         </>
     );
 }
